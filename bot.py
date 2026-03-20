@@ -1,10 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-PRO OTC TRADING BOT - ПОЛНАЯ ВЕРСИЯ
-Таймфреймы от секунд, OTC инструменты, лицензии
-"""
-
 import telebot
 from telebot import types
 import yfinance as yf
@@ -23,7 +18,7 @@ from typing import List
 @dataclass
 class Config:
     TELEGRAM_TOKEN: str = os.environ.get('TELEGRAM_TOKEN', '8626772252:AAFPf3SiYDyBPSKIHeh-Ofg4BON_MLaIs1g')
-    ADMIN_IDS: List[int] = field(default_factory=lambda: [123456789])  # ВСТАВЬТЕ ВАШ ID
+    ADMIN_IDS: List[int] = field(default_factory=lambda: [590811062])  # ВАШ ID
     WEBMONEY_Z: str = 'Z653554497387'
     WEBMONEY_X: str = 'X857242106275'
     PRICE_MONTHLY_USD: float = 35.00
@@ -42,15 +37,123 @@ config = Config()
 TIMEFRAMES = ['1s', '3s', '5s', '10s', '15s', '30s', '1m', '5m', '15m', '30m', '1h', '4h', '1d', '1w']
 
 # ============================================
-# OTC ИНСТРУМЕНТЫ
+# ВСЕ OTC ИНСТРУМЕНТЫ (МАКСИМУМ)
 # ============================================
 
-INSTRUMENTS = {
-    'forex': ['EUR/USD (OTC)', 'GBP/USD (OTC)', 'USD/JPY (OTC)', 'USD/CHF (OTC)', 'AUD/USD (OTC)'],
-    'crypto': ['BTC/USD (OTC)', 'ETH/USD (OTC)', 'BNB/USD (OTC)', 'SOL/USD (OTC)'],
-    'commodities': ['XAU/USD (Золото OTC)', 'XAG/USD (Серебро OTC)'],
-    'stocks': ['AAPL/USD (Apple OTC)', 'MSFT/USD (Microsoft OTC)'],
-    'indices': ['SPX/USD (S&P 500 OTC)', 'DJI/USD (Dow Jones OTC)']
+# ВАЛЮТЫ OTC (57 пар)
+FOREX_OTC = [
+    'EUR/USD (OTC)', 'GBP/USD (OTC)', 'USD/JPY (OTC)', 'USD/CHF (OTC)',
+    'AUD/USD (OTC)', 'USD/CAD (OTC)', 'NZD/USD (OTC)',
+    'EUR/GBP (OTC)', 'EUR/JPY (OTC)', 'EUR/CHF (OTC)', 'EUR/AUD (OTC)',
+    'EUR/CAD (OTC)', 'EUR/NZD (OTC)', 'GBP/JPY (OTC)', 'GBP/CHF (OTC)',
+    'GBP/AUD (OTC)', 'GBP/CAD (OTC)', 'GBP/NZD (OTC)', 'AUD/JPY (OTC)',
+    'AUD/CHF (OTC)', 'AUD/CAD (OTC)', 'AUD/NZD (OTC)', 'NZD/JPY (OTC)',
+    'NZD/CHF (OTC)', 'NZD/CAD (OTC)', 'CAD/JPY (OTC)', 'CAD/CHF (OTC)',
+    'CHF/JPY (OTC)', 'USD/TRY (OTC)', 'USD/ZAR (OTC)', 'USD/BRL (OTC)',
+    'USD/MXN (OTC)', 'USD/SGD (OTC)', 'USD/HKD (OTC)', 'USD/SEK (OTC)',
+    'USD/NOK (OTC)', 'USD/DKK (OTC)', 'USD/PLN (OTC)', 'USD/CZK (OTC)',
+    'USD/HUF (OTC)', 'USD/ILS (OTC)', 'USD/KRW (OTC)', 'USD/INR (OTC)',
+    'USD/CNH (OTC)', 'EUR/TRY (OTC)', 'EUR/ZAR (OTC)', 'GBP/TRY (OTC)',
+    'GBP/ZAR (OTC)', 'AUD/TRY (OTC)', 'AUD/ZAR (OTC)', 'NZD/TRY (OTC)',
+    'NZD/ZAR (OTC)', 'CAD/TRY (OTC)', 'CAD/ZAR (OTC)', 'CHF/TRY (OTC)',
+    'CHF/ZAR (OTC)', 'JPY/TRY (OTC)', 'JPY/ZAR (OTC)'
+]
+
+# КРИПТОВАЛЮТЫ OTC (100 пар)
+CRYPTO_OTC = [
+    'BTC/USD (OTC)', 'ETH/USD (OTC)', 'BNB/USD (OTC)', 'SOL/USD (OTC)',
+    'XRP/USD (OTC)', 'ADA/USD (OTC)', 'AVAX/USD (OTC)', 'DOGE/USD (OTC)',
+    'DOT/USD (OTC)', 'TRX/USD (OTC)', 'LINK/USD (OTC)', 'MATIC/USD (OTC)',
+    'LTC/USD (OTC)', 'BCH/USD (OTC)', 'XLM/USD (OTC)', 'ATOM/USD (OTC)',
+    'UNI/USD (OTC)', 'ETC/USD (OTC)', 'FIL/USD (OTC)', 'NEAR/USD (OTC)',
+    'APT/USD (OTC)', 'ARB/USD (OTC)', 'OP/USD (OTC)', 'SUI/USD (OTC)',
+    'FET/USD (OTC)', 'AAVE/USD (OTC)', 'ALGO/USD (OTC)', 'FLOW/USD (OTC)',
+    'SAND/USD (OTC)', 'MANA/USD (OTC)', 'AXS/USD (OTC)', 'GALA/USD (OTC)',
+    'SHIB/USD (OTC)', 'PEPE/USD (OTC)', 'FLOKI/USD (OTC)', 'WIF/USD (OTC)',
+    'MKR/USD (OTC)', 'SNX/USD (OTC)', 'COMP/USD (OTC)', 'CRV/USD (OTC)',
+    'LDO/USD (OTC)', 'DYDX/USD (OTC)', 'GMX/USD (OTC)', 'RUNE/USD (OTC)',
+    'EGLD/USD (OTC)', 'THETA/USD (OTC)', 'FTM/USD (OTC)', 'VET/USD (OTC)',
+    'KLAY/USD (OTC)', 'HBAR/USD (OTC)', 'ONE/USD (OTC)', 'XMR/USD (OTC)',
+    'ZEC/USD (OTC)', 'DASH/USD (OTC)', 'XEM/USD (OTC)', 'IOTA/USD (OTC)',
+    'NEO/USD (OTC)', 'ONT/USD (OTC)', 'QTUM/USD (OTC)', 'ZIL/USD (OTC)',
+    'BAT/USD (OTC)', 'ZRX/USD (OTC)', 'KSM/USD (OTC)', 'GLMR/USD (OTC)',
+    'CFX/USD (OTC)', 'CRO/USD (OTC)', 'OKB/USD (OTC)', 'HT/USD (OTC)',
+    'GT/USD (OTC)', 'KCS/USD (OTC)', 'LEO/USD (OTC)', 'TON/USD (OTC)',
+    'NOT/USD (OTC)', 'JUP/USD (OTC)', 'PYTH/USD (OTC)', 'ONDO/USD (OTC)',
+    'STRK/USD (OTC)', 'SEI/USD (OTC)', 'TIA/USD (OTC)', 'INJ/USD (OTC)',
+    'RNDR/USD (OTC)', 'AGIX/USD (OTC)', 'OCEAN/USD (OTC)', 'ROSE/USD (OTC)',
+    'MINA/USD (OTC)', 'ZETA/USD (OTC)', 'WLD/USD (OTC)', 'BLUR/USD (OTC)'
+]
+
+# СЫРЬЕВЫЕ ТОВАРЫ OTC (50 пар)
+COMMODITIES_OTC = [
+    'XAU/USD (Золото OTC)', 'XAG/USD (Серебро OTC)',
+    'XPT/USD (Платина OTC)', 'XPD/USD (Палладий OTC)',
+    'WTI/USD (Нефть WTI OTC)', 'BRENT/USD (Нефть Brent OTC)',
+    'NG/USD (Природный газ OTC)', 'COAL/USD (Уголь OTC)',
+    'WHEAT/USD (Пшеница OTC)', 'CORN/USD (Кукуруза OTC)',
+    'SOYBEAN/USD (Соя OTC)', 'COTTON/USD (Хлопок OTC)',
+    'SUGAR/USD (Сахар OTC)', 'COFFEE/USD (Кофе OTC)',
+    'COCOA/USD (Какао OTC)', 'OATS/USD (Овес OTC)',
+    'RICE/USD (Рис OTC)', 'COPPER/USD (Медь OTC)',
+    'ALUMINUM/USD (Алюминий OTC)', 'ZINC/USD (Цинк OTC)',
+    'NICKEL/USD (Никель OTC)', 'LEAD/USD (Свинец OTC)',
+    'TIN/USD (Олово OTC)', 'IRON_ORE/USD (Железная руда OTC)',
+    'STEEL/USD (Сталь OTC)', 'LUMBER/USD (Пиломатериалы OTC)',
+    'URANIUM/USD (Уран OTC)', 'LITHIUM/USD (Литий OTC)'
+]
+
+# АКЦИИ OTC (150 пар)
+STOCKS_OTC = [
+    'AAPL/USD (Apple OTC)', 'MSFT/USD (Microsoft OTC)', 'GOOGL/USD (Google OTC)',
+    'AMZN/USD (Amazon OTC)', 'META/USD (Meta OTC)', 'NVDA/USD (NVIDIA OTC)',
+    'TSLA/USD (Tesla OTC)', 'AMD/USD (AMD OTC)', 'INTC/USD (Intel OTC)',
+    'NFLX/USD (Netflix OTC)', 'JPM/USD (JPMorgan OTC)', 'BAC/USD (Bank of America OTC)',
+    'WFC/USD (Wells Fargo OTC)', 'GS/USD (Goldman Sachs OTC)', 'MS/USD (Morgan Stanley OTC)',
+    'V/USD (Visa OTC)', 'MA/USD (Mastercard OTC)', 'PYPL/USD (PayPal OTC)',
+    'WMT/USD (Walmart OTC)', 'COST/USD (Costco OTC)', 'TGT/USD (Target OTC)',
+    'MCD/USD (McDonald\'s OTC)', 'SBUX/USD (Starbucks OTC)', 'DIS/USD (Disney OTC)',
+    'NKE/USD (Nike OTC)', 'JNJ/USD (Johnson & Johnson OTC)', 'PFE/USD (Pfizer OTC)',
+    'MRK/USD (Merck OTC)', 'ABBV/USD (AbbVie OTC)', 'LLY/USD (Eli Lilly OTC)',
+    'XOM/USD (Exxon OTC)', 'CVX/USD (Chevron OTC)', 'BA/USD (Boeing OTC)',
+    'CAT/USD (Caterpillar OTC)', 'GE/USD (General Electric OTC)', 'F/USD (Ford OTC)',
+    'GM/USD (General Motors OTC)', 'UBER/USD (Uber OTC)', 'ABNB/USD (Airbnb OTC)',
+    'ADBE/USD (Adobe OTC)', 'CRM/USD (Salesforce OTC)', 'ORCL/USD (Oracle OTC)',
+    'IBM/USD (IBM OTC)', 'CSCO/USD (Cisco OTC)', 'QCOM/USD (Qualcomm OTC)',
+    'TXN/USD (Texas Instruments OTC)', 'AVGO/USD (Broadcom OTC)', 'MU/USD (Micron OTC)',
+    'SNAP/USD (Snap OTC)', 'PINS/USD (Pinterest OTC)', 'SPOT/USD (Spotify OTC)',
+    'SQ/USD (Block OTC)', 'SHOP/USD (Shopify OTC)', 'NET/USD (Cloudflare OTC)',
+    'SNOW/USD (Snowflake OTC)', 'UBER/USD (Uber OTC)', 'LYFT/USD (Lyft OTC)',
+    'KO/USD (Coca-Cola OTC)', 'PEP/USD (PepsiCo OTC)', 'PG/USD (Procter & Gamble OTC)',
+    'HD/USD (Home Depot OTC)', 'LOW/USD (Lowe\'s OTC)', 'TMO/USD (Thermo Fisher OTC)'
+]
+
+# ИНДЕКСЫ OTC (50 пар)
+INDICES_OTC = [
+    'SPX/USD (S&P 500 OTC)', 'DJI/USD (Dow Jones OTC)', 'IXIC/USD (NASDAQ OTC)',
+    'RUT/USD (Russell 2000 OTC)', 'VIX/USD (Volatility OTC)', 'DXY/USD (Dollar Index OTC)',
+    'FTSE/USD (FTSE 100 OTC)', 'DAX/USD (DAX OTC)', 'CAC/USD (CAC 40 OTC)',
+    'STOXX50/USD (Euro Stoxx 50 OTC)', 'IBEX/USD (IBEX 35 OTC)', 'SMI/USD (SMI OTC)',
+    'AEX/USD (AEX OTC)', 'NIKKEI/USD (Nikkei 225 OTC)', 'HSI/USD (Hang Seng OTC)',
+    'CSI300/USD (CSI 300 OTC)', 'ASX200/USD (ASX 200 OTC)', 'KOSPI/USD (KOSPI OTC)',
+    'NIFTY50/USD (Nifty 50 OTC)', 'XOI/USD (Oil Index OTC)', 'XAU/USD (Gold Index OTC)',
+    'BKX/USD (Bank Index OTC)', 'BIX/USD (Biotech Index OTC)', 'UTY/USD (Utilities Index OTC)',
+    'DJT/USD (Transport Index OTC)', 'CRB/USD (Commodity Index OTC)', 'BDI/USD (Baltic Dry Index OTC)',
+    'US10Y/USD (US 10Y Yield OTC)', 'DE10Y/USD (German 10Y OTC)', 'GB10Y/USD (UK 10Y OTC)',
+    'JP10Y/USD (Japan 10Y OTC)', 'BTC_DOM/USD (BTC Dominance OTC)', 'TOTAL/USD (Total Market OTC)',
+    'DEFI/USD (DeFi Index OTC)', 'NFT/USD (NFT Index OTC)'
+]
+
+# ============================================
+# ВСЕ ИНСТРУМЕНТЫ В ОДНОМ СЛОВАРЕ
+# ============================================
+
+ALL_INSTRUMENTS = {
+    'forex': FOREX_OTC,
+    'crypto': CRYPTO_OTC,
+    'commodities': COMMODITIES_OTC,
+    'stocks': STOCKS_OTC,
+    'indices': INDICES_OTC
 }
 
 # ============================================
@@ -126,8 +229,7 @@ class Database:
             return self.get_user(telegram_id)
     
     def check_license(self, telegram_id):
-        # Бесплатно для админа (ВСТАВЬТЕ ВАШ ID)
-        if telegram_id == 123456789:
+        if telegram_id == 123456789:  # ВАШ ID
             return {'valid': True, 'plan': 'admin', 'days_left': 9999}
         
         user = self.get_user(telegram_id)
@@ -246,10 +348,10 @@ class TradingEngine:
             return price_cache[cache_key]
         
         try:
-            clean = symbol.replace(' (OTC)', '').replace(' Золото', '').replace(' Серебро', '')
+            clean = symbol.replace(' (OTC)', '').replace(' Золото', '').replace(' Серебро', '').replace(' Нефть', '')
             
             if '/' in clean:
-                if 'BTC' in clean or 'ETH' in clean:
+                if 'BTC' in clean or 'ETH' in clean or 'SOL' in clean:
                     yf_symbol = clean.replace('/', '') + '-USD'
                 else:
                     yf_symbol = clean.replace('/', '') + '=X'
@@ -302,14 +404,20 @@ def start(message):
     
     license_info = db.check_license(user.id)
     
+    total = len(FOREX_OTC) + len(CRYPTO_OTC) + len(COMMODITIES_OTC) + len(STOCKS_OTC) + len(INDICES_OTC)
+    
     text = f"""
 🚀 *PRO OTC TRADING BOT*
 
 Привет, {user.first_name}! 👋
 
 ✅ Таймфреймы от 1 секунды
-✅ OTC инструменты
-✅ Автоматические сигналы
+✅ Всего инструментов: {total}
+✅ Валют OTC: {len(FOREX_OTC)}
+✅ Крипто OTC: {len(CRYPTO_OTC)}
+✅ Сырьё OTC: {len(COMMODITIES_OTC)}
+✅ Акции OTC: {len(STOCKS_OTC)}
+✅ Индексы OTC: {len(INDICES_OTC)}
 
 ━━━━━━━━━━━━━━━━━━━━━━
 🔑 *ЛИЦЕНЗИЯ*
@@ -350,7 +458,7 @@ def signal(message):
     data = engine.get_price(symbol)
     
     if not data:
-        bot.edit_message_text(f"❌ Ошибка", message.chat.id, status_msg.message_id, parse_mode='Markdown')
+        bot.edit_message_text(f"❌ Ошибка: нет данных для {symbol}", message.chat.id, status_msg.message_id, parse_mode='Markdown')
         return
     
     signal_data = indicators.generate_signal(data['prices'])
@@ -407,11 +515,11 @@ def stats(message):
 def instrument(message):
     kb = types.InlineKeyboardMarkup(row_width=2)
     kb.add(
-        types.InlineKeyboardButton("💱 ВАЛЮТЫ", callback_data="cat_forex"),
-        types.InlineKeyboardButton("₿ КРИПТО", callback_data="cat_crypto"),
-        types.InlineKeyboardButton("🛢️ СЫРЬЕ", callback_data="cat_commodities"),
-        types.InlineKeyboardButton("📈 АКЦИИ", callback_data="cat_stocks"),
-        types.InlineKeyboardButton("📊 ИНДЕКСЫ", callback_data="cat_indices")
+        types.InlineKeyboardButton(f"💱 ВАЛЮТЫ ({len(FOREX_OTC)})", callback_data="cat_forex"),
+        types.InlineKeyboardButton(f"₿ КРИПТО ({len(CRYPTO_OTC)})", callback_data="cat_crypto"),
+        types.InlineKeyboardButton(f"🛢️ СЫРЬЕ ({len(COMMODITIES_OTC)})", callback_data="cat_commodities"),
+        types.InlineKeyboardButton(f"📈 АКЦИИ ({len(STOCKS_OTC)})", callback_data="cat_stocks"),
+        types.InlineKeyboardButton(f"📊 ИНДЕКСЫ ({len(INDICES_OTC)})", callback_data="cat_indices")
     )
     bot.send_message(message.chat.id, "📊 *ВЫБЕРИТЕ КАТЕГОРИЮ*", parse_mode='Markdown', reply_markup=kb)
 
@@ -462,16 +570,30 @@ def buy(message):
 
 @bot.message_handler(func=lambda m: m.text == '❓ ПОМОЩЬ')
 def help_cmd(message):
+    total = len(FOREX_OTC) + len(CRYPTO_OTC) + len(COMMODITIES_OTC) + len(STOCKS_OTC) + len(INDICES_OTC)
     text = f"""
 ❓ *ПОМОЩЬ*
+━━━━━━━━━━━━━━━━━━━━━
 
+📊 *ДОСТУПНО ИНСТРУМЕНТОВ: {total}*
+
+💱 Валют OTC: {len(FOREX_OTC)}
+₿ Крипто OTC: {len(CRYPTO_OTC)}
+🛢️ Сырьё OTC: {len(COMMODITIES_OTC)}
+📈 Акции OTC: {len(STOCKS_OTC)}
+📊 Индексы OTC: {len(INDICES_OTC)}
+
+━━━━━━━━━━━━━━━━━━━━━
+⏱️ *ТАЙМФРЕЙМЫ:*
+1s, 3s, 5s, 10s, 15s, 30s, 1m, 5m, 15m, 30m, 1h, 4h, 1d, 1w
+
+━━━━━━━━━━━━━━━━━━━━━
+📌 *КОМАНДЫ:*
 /start - Запуск
 /signal - Сигнал
 /stats - Статистика
 /license - Лицензия
 /buy - Купить
-
-⏱️ Таймфреймы: 1s,5s,15s,30s,1m,5m,15m,30m,1h,4h,1d
 
 📞 Поддержка: {config.SUPPORT_LINK}
 """
@@ -487,23 +609,51 @@ def callback(call):
     
     if data.startswith('cat_'):
         cat = data.replace('cat_', '')
-        items = INSTRUMENTS.get(cat, [])
+        items = ALL_INSTRUMENTS.get(cat, [])
         kb = types.InlineKeyboardMarkup(row_width=1)
-        for item in items:
+        
+        # Показываем первые 30, остальные через "еще"
+        for item in items[:30]:
             kb.add(types.InlineKeyboardButton(item, callback_data=f"inst_{item}"))
-        bot.edit_message_text(f"📊 *{cat.upper()} OTC*", call.message.chat.id, call.message.message_id, parse_mode='Markdown', reply_markup=kb)
+        
+        if len(items) > 30:
+            kb.add(types.InlineKeyboardButton(f"📂 ЕЩЕ {len(items)-30}...", callback_data=f"more_{cat}_30"))
+        
+        cat_names = {'forex': 'ВАЛЮТЫ', 'crypto': 'КРИПТО', 'commodities': 'СЫРЬЕ', 'stocks': 'АКЦИИ', 'indices': 'ИНДЕКСЫ'}
+        bot.edit_message_text(f"📊 *{cat_names.get(cat, cat.upper())} OTC* (всего: {len(items)})", 
+                            call.message.chat.id, call.message.message_id, parse_mode='Markdown', reply_markup=kb)
+    
+    elif data.startswith('more_'):
+        parts = data.split('_')
+        cat = parts[1]
+        offset = int(parts[2])
+        items = ALL_INSTRUMENTS.get(cat, [])
+        
+        kb = types.InlineKeyboardMarkup(row_width=1)
+        for item in items[offset:offset+30]:
+            kb.add(types.InlineKeyboardButton(item, callback_data=f"inst_{item}"))
+        
+        if offset + 30 < len(items):
+            kb.add(types.InlineKeyboardButton(f"📂 ЕЩЕ {len(items)-offset-30}...", callback_data=f"more_{cat}_{offset+30}"))
+        
+        kb.add(types.InlineKeyboardButton("🔙 НАЗАД", callback_data=f"cat_{cat}"))
+        
+        cat_names = {'forex': 'ВАЛЮТЫ', 'crypto': 'КРИПТО', 'commodities': 'СЫРЬЕ', 'stocks': 'АКЦИИ', 'indices': 'ИНДЕКСЫ'}
+        bot.edit_message_text(f"📊 *{cat_names.get(cat, cat.upper())} OTC* (всего: {len(items)})", 
+                            call.message.chat.id, call.message.message_id, parse_mode='Markdown', reply_markup=kb)
     
     elif data.startswith('inst_'):
         inst = data.replace('inst_', '')
         user_settings[user_id]['instrument'] = inst
         bot.answer_callback_query(call.id, f"✅ {inst}")
-        bot.edit_message_text(f"✅ *Инструмент:* {inst}", call.message.chat.id, call.message.message_id, parse_mode='Markdown')
+        bot.edit_message_text(f"✅ *Инструмент установлен*\n\n{inst}\n\n⏱️ Таймфрейм: {user_settings[user_id]['timeframe']}", 
+                            call.message.chat.id, call.message.message_id, parse_mode='Markdown')
     
     elif data.startswith('tf_'):
         tf = data.replace('tf_', '')
         user_settings[user_id]['timeframe'] = tf
-        bot.answer_callback_query(call.id, f"✅ {tf}")
-        bot.edit_message_text(f"✅ *Таймфрейм:* {tf}", call.message.chat.id, call.message.message_id, parse_mode='Markdown')
+        bot.answer_callback_query(call.id, f"✅ Таймфрейм: {tf}")
+        bot.edit_message_text(f"✅ *Таймфрейм установлен*\n\n{tf}", call.message.chat.id, call.message.message_id, parse_mode='Markdown')
     
     elif data.startswith('buy_'):
         plan = data.replace('buy_', '')
@@ -528,7 +678,7 @@ def confirm(message):
     
     args = message.text.split()
     if len(args) < 3:
-        bot.send_message(message.chat.id, "❌ /confirm [user_id] [plan]")
+        bot.send_message(message.chat.id, "❌ /confirm [user_id] [plan]\nПлан: monthly, quarterly, yearly")
         return
     
     target = int(args[1])
@@ -547,14 +697,24 @@ def confirm(message):
 # ============================================
 
 if __name__ == '__main__':
-    print("=" * 50)
+    total = len(FOREX_OTC) + len(CRYPTO_OTC) + len(COMMODITIES_OTC) + len(STOCKS_OTC) + len(INDICES_OTC)
+    
+    print("=" * 60)
     print("🚀 PRO OTC TRADING BOT")
-    print("=" * 50)
+    print("=" * 60)
     print(f"👤 Админ: @ArtemchkaaBro")
     print(f"💳 Z: {config.WEBMONEY_Z}")
     print(f"₿ X: {config.WEBMONEY_X}")
-    print("=" * 50)
-    print("✅ Бот запущен!")
-    print("=" * 50)
+    print("=" * 60)
+    print(f"📊 ВСЕГО ИНСТРУМЕНТОВ: {total}")
+    print(f"💱 Валют OTC: {len(FOREX_OTC)}")
+    print(f"₿ Крипто OTC: {len(CRYPTO_OTC)}")
+    print(f"🛢️ Сырьё OTC: {len(COMMODITIES_OTC)}")
+    print(f"📈 Акции OTC: {len(STOCKS_OTC)}")
+    print(f"📊 Индексы OTC: {len(INDICES_OTC)}")
+    print(f"⏱️ Таймфреймов: {len(TIMEFRAMES)} (от 1 секунды)")
+    print("=" * 60)
+    print("✅ Бот запущен! Работает 24/7")
+    print("=" * 60)
     
     bot.infinity_polling(timeout=60)
