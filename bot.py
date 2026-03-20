@@ -593,7 +593,62 @@ def confirm(message):
 # ============================================
 # ЗАПУСК
 # ============================================
+@bot.message_handler(commands=['trade'])
+def add_trade(message):
+    user_id = message.from_user.id
+    
+    args = message.text.split()
+    if len(args) < 3:
+        bot.reply_to(message, "❌ Используйте: /trade [WIN/LOSS] [сумма]\nПример: /trade WIN 15")
+        return
+    
+    result = args[1].upper()
+    try:
+        amount = float(args[2])
+    except:
+        bot.reply_to(message, "❌ Сумма должна быть числом")
+        return
+    
+    if result not in ['WIN', 'LOSS']:
+        bot.reply_to(message, "❌ Результат: WIN или LOSS")
+        return
+    
+    # Получаем текущую статистику
+    user = db.get_user(user_id)
+    if not user:
+        db.create_user(user_id, message.from_user.username, message.from_user.first_name)
+        user = db.get_user(user_id)
+    
+    # Обновляем статистику
+    total_trades = user['total_trades'] + 1
+    winning_trades = user['winning_trades'] + (1 if result == 'WIN' else 0)
+    total_profit = user['total_profit'] + (amount if result == 'WIN' else -amount)
+    
+    with sqlite3.connect(config.DATABASE) as conn:
+        c = conn.cursor()
+        c.execute('''UPDATE users SET total_trades = ?, winning_trades = ?, total_profit = ?
+                     WHERE telegram_id = ?''', 
+                  (total_trades, winning_trades, total_profit, user_id))
+        conn.commit()
+    
+    win_rate = (winning_trades / total_trades * 100) if total_trades > 0 else 0
+    
+    text = f"""
+✅ *СДЕЛКА ЗАПИСАНА!*
 
+📊 Результат: {'🟢 WIN' if result == 'WIN' else '🔴 LOSS'}
+💰 Сумма: ${amount:.2f}
+{'📈 Прибыль' if result == 'WIN' else '📉 Убыток'}: ${amount if result == 'WIN' else -amount:.2f}
+
+━━━━━━━━━━━━━━━━━━━━━━
+📊 *ОБНОВЛЕННАЯ СТАТИСТИКА:*
+├ Сделок: {total_trades}
+├ Побед: {winning_trades}
+├ Поражений: {total_trades - winning_trades}
+├ Win Rate: {win_rate:.1f}%
+└ Общая прибыль: ${total_profit:.2f}
+"""
+    bot.reply_to(message, text, parse_mode='Markdown')
 if __name__ == '__main__':
     print("=" * 60)
     print("🚀 PRO OTC TRADING BOT")
