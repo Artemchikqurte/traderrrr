@@ -229,12 +229,25 @@ class Database:
             return self.get_user(telegram_id)
     
     def check_license(self, telegram_id):
+        # Бесплатно для админа
         if telegram_id == 123456789:  # ВАШ ID
             return {'valid': True, 'plan': 'admin', 'days_left': 9999}
         
+        # Проверяем или создаем пользователя
         user = self.get_user(telegram_id)
         if not user:
-            return {'valid': False, 'message': 'Пользователь не найден'}
+            # Создаем пользователя автоматически
+            # Нужно получить username и first_name, но здесь их нет
+            # Поэтому создаем с пустыми данными
+            expires = (datetime.now() + timedelta(days=config.FREE_TRIAL_DAYS)).isoformat()
+            with sqlite3.connect(config.DATABASE) as conn:
+                c = conn.cursor()
+                c.execute('''INSERT INTO users (telegram_id, username, first_name, license_plan, license_expires, license_status)
+                             VALUES (?, ?, ?, ?, ?, ?)''',
+                          (telegram_id, '', '', 'trial', expires, 'active'))
+                conn.commit()
+            return {'valid': True, 'plan': 'trial', 'days_left': config.FREE_TRIAL_DAYS}
+        
         if user['license_status'] != 'active':
             return {'valid': False, 'message': 'Лицензия неактивна'}
         expires = datetime.fromisoformat(user['license_expires'])
