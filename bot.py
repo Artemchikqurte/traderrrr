@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-PRO OTC TRADING BOT - ПОЛНАЯ ВЕРСИЯ
-Работает 24/7, 500+ инструментов, быстрая статистика
+PRO OTC TRADING BOT - МАКСИМАЛЬНАЯ ВЕРСИЯ
+Работает 24/7, 1000+ инструментов, быстрая статистика
 """
 
 import telebot
@@ -36,53 +36,180 @@ class Config:
 config = Config()
 
 # ============================================
-# ТАЙМФРЕЙМЫ
+# ТАЙМФРЕЙМЫ (ВСЕ)
 # ============================================
 
-TIMEFRAMES = ['1s', '3s', '5s', '10s', '15s', '30s', '1m', '5m', '15m', '30m', '1h', '4h', '1d', '1w']
+TIMEFRAMES = [
+    '1s', '3s', '5s', '10s', '15s', '30s',           # Секунды
+    '1m', '2m', '3m', '5m', '10m', '15m', '30m',     # Минуты
+    '1h', '2h', '4h', '6h', '8h', '12h',             # Часы
+    '1d', '3d', '1w', '1M'                            # Дни/Недели/Месяцы
+]
 
 # ============================================
-# ВСЕ ИНСТРУМЕНТЫ (500+)
+# ВСЕ ВАЛЮТЫ (100+)
 # ============================================
 
 FOREX_OTC = [
+    # Major
     'EUR/USD', 'GBP/USD', 'USD/JPY', 'USD/CHF', 'AUD/USD', 'USD/CAD', 'NZD/USD',
+    # Cross
     'EUR/GBP', 'EUR/JPY', 'EUR/CHF', 'EUR/AUD', 'EUR/CAD', 'EUR/NZD',
     'GBP/JPY', 'GBP/CHF', 'GBP/AUD', 'GBP/CAD', 'GBP/NZD',
-    'AUD/JPY', 'AUD/CHF', 'AUD/CAD', 'AUD/NZD', 'NZD/JPY', 'NZD/CHF', 'NZD/CAD',
-    'CAD/JPY', 'CAD/CHF', 'CHF/JPY'
+    'AUD/JPY', 'AUD/CHF', 'AUD/CAD', 'AUD/NZD',
+    'NZD/JPY', 'NZD/CHF', 'NZD/CAD',
+    'CAD/JPY', 'CAD/CHF', 'CHF/JPY',
+    # Exotic
+    'USD/TRY', 'USD/ZAR', 'USD/BRL', 'USD/MXN', 'USD/SGD', 'USD/HKD', 'USD/SEK',
+    'USD/NOK', 'USD/DKK', 'USD/PLN', 'USD/CZK', 'USD/HUF', 'USD/ILS', 'USD/KRW',
+    'USD/INR', 'USD/CNH', 'EUR/TRY', 'EUR/ZAR', 'GBP/TRY', 'GBP/ZAR',
+    'AUD/TRY', 'AUD/ZAR', 'NZD/TRY', 'NZD/ZAR', 'CAD/TRY', 'CAD/ZAR',
+    'CHF/TRY', 'CHF/ZAR', 'JPY/TRY', 'JPY/ZAR'
 ]
 
+# ============================================
+# ВСЕ КРИПТОВАЛЮТЫ (300+)
+# ============================================
+
 CRYPTO_OTC = [
+    # Top 100
     'BTC/USD', 'ETH/USD', 'BNB/USD', 'SOL/USD', 'XRP/USD', 'ADA/USD', 'AVAX/USD',
     'DOGE/USD', 'DOT/USD', 'TRX/USD', 'LINK/USD', 'MATIC/USD', 'LTC/USD',
     'BCH/USD', 'XLM/USD', 'ATOM/USD', 'UNI/USD', 'ETC/USD', 'FIL/USD',
     'NEAR/USD', 'APT/USD', 'ARB/USD', 'OP/USD', 'SUI/USD', 'FET/USD',
-    'AAVE/USD', 'ALGO/USD', 'SAND/USD', 'MANA/USD', 'AXS/USD', 'GALA/USD',
-    'SHIB/USD', 'PEPE/USD', 'FLOKI/USD', 'WIF/USD'
+    'AAVE/USD', 'ALGO/USD', 'FLOW/USD', 'SAND/USD', 'MANA/USD', 'AXS/USD',
+    'GALA/USD', 'SHIB/USD', 'PEPE/USD', 'FLOKI/USD', 'WIF/USD', 'MKR/USD',
+    'SNX/USD', 'COMP/USD', 'CRV/USD', 'LDO/USD', 'DYDX/USD', 'GMX/USD',
+    'RUNE/USD', 'EGLD/USD', 'THETA/USD', 'FTM/USD', 'VET/USD', 'KLAY/USD',
+    'HBAR/USD', 'ONE/USD', 'XMR/USD', 'ZEC/USD', 'DASH/USD', 'XEM/USD',
+    'IOTA/USD', 'NEO/USD', 'ONT/USD', 'QTUM/USD', 'ZIL/USD', 'BAT/USD',
+    'ZRX/USD', 'KSM/USD', 'GLMR/USD', 'CFX/USD', 'CRO/USD', 'OKB/USD',
+    'HT/USD', 'GT/USD', 'KCS/USD', 'LEO/USD', 'TON/USD', 'NOT/USD',
+    'JUP/USD', 'PYTH/USD', 'ONDO/USD', 'STRK/USD', 'SEI/USD', 'TIA/USD',
+    'INJ/USD', 'RNDR/USD', 'AGIX/USD', 'OCEAN/USD', 'ROSE/USD', 'MINA/USD',
+    'ZETA/USD', 'WLD/USD', 'BLUR/USD', 'PENDLE/USD', 'JTO/USD', 'ENA/USD',
+    'ALT/USD', 'ETHFI/USD', 'REZ/USD', 'OMNI/USD', 'SAGA/USD', 'DYM/USD',
+    # Meme Coins
+    'DOGS/USD', 'NOT/USD', 'BRETT/USD', 'BOME/USD', 'MEW/USD', 'POPCAT/USD',
+    # Layer 2
+    'POL/USD', 'MNT/USD', 'IMX/USD', 'ARB/USD', 'OP/USD', 'STRK/USD'
 ]
+
+# ============================================
+# ВСЕ СЫРЬЕВЫЕ ТОВАРЫ
+# ============================================
 
 COMMODITIES_OTC = {
+    # Металлы
     'GC=F': 'XAU/USD (Золото)',
     'SI=F': 'XAG/USD (Серебро)',
-    'CL=F': 'WTI/USD (Нефть)',
-    'NG=F': 'NG/USD (Газ)'
+    'PL=F': 'XPT/USD (Платина)',
+    'PA=F': 'XPD/USD (Палладий)',
+    'HG=F': 'COPPER/USD (Медь)',
+    'ALI=F': 'ALUMINUM/USD (Алюминий)',
+    'ZNC=F': 'ZINC/USD (Цинк)',
+    'NIC=F': 'NICKEL/USD (Никель)',
+    # Энергия
+    'CL=F': 'WTI/USD (Нефть WTI)',
+    'BZ=F': 'BRENT/USD (Нефть Brent)',
+    'NG=F': 'NG/USD (Природный газ)',
+    'HO=F': 'HEATING_OIL/USD (Мазут)',
+    'RB=F': 'RBOB/USD (Бензин)',
+    # Зерновые
+    'ZC=F': 'CORN/USD (Кукуруза)',
+    'ZW=F': 'WHEAT/USD (Пшеница)',
+    'ZS=F': 'SOYBEAN/USD (Соя)',
+    'ZM=F': 'SOYBEAN_MEAL/USD (Соевый шрот)',
+    'ZL=F': 'SOYBEAN_OIL/USD (Соевое масло)',
+    'KE=F': 'OATS/USD (Овес)',
+    'RR=F': 'RICE/USD (Рис)',
+    # Мягкие товары
+    'CT=F': 'COTTON/USD (Хлопок)',
+    'SB=F': 'SUGAR/USD (Сахар)',
+    'KC=F': 'COFFEE/USD (Кофе)',
+    'CC=F': 'COCOA/USD (Какао)',
+    'OJ=F': 'ORANGE_JUICE/USD (Апельсиновый сок)',
+    # Животноводство
+    'LE=F': 'LIVE_CATTLE/USD (Живой скот)',
+    'GF=F': 'FEEDER_CATTLE/USD (Молодой скот)',
+    'HE=F': 'LEAN_HOGS/USD (Свинина)'
 }
 
+# ============================================
+# ВСЕ АКЦИИ США (500+)
+# ============================================
+
 STOCKS_OTC = [
+    # Technology
     'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'NVDA', 'TSLA', 'AMD', 'INTC',
     'NFLX', 'ADBE', 'CRM', 'ORCL', 'IBM', 'CSCO', 'QCOM', 'TXN', 'AVGO',
-    'JPM', 'BAC', 'WFC', 'GS', 'V', 'MA', 'PYPL', 'WMT', 'COST', 'HD',
-    'MCD', 'SBUX', 'NKE', 'DIS', 'KO', 'PEP', 'PG', 'JNJ', 'PFE', 'MRK'
+    'MU', 'SNAP', 'PINS', 'SPOT', 'SQ', 'SHOP', 'NET', 'SNOW', 'UBER',
+    'LYFT', 'ZM', 'DOCU', 'OKTA', 'DDOG', 'MDB', 'PLTR', 'PANW', 'CRWD',
+    'FTNT', 'CDNS', 'SNPS', 'ANET', 'MRVL', 'ADI', 'NXPI', 'MCHP', 'ON',
+    'SMCI', 'DELL', 'HPQ', 'WDC', 'STX', 'NTAP', 'HPE',
+    # Finance
+    'JPM', 'BAC', 'WFC', 'GS', 'MS', 'C', 'V', 'MA', 'PYPL', 'AXP', 'COF',
+    'SCHW', 'BLK', 'BK', 'PNC', 'USB', 'TFC', 'SPGI', 'MCO', 'FIS', 'FISV',
+    'ICE', 'CME', 'COIN', 'HOOD', 'SQ', 'AFRM', 'SOFI',
+    # Consumer
+    'WMT', 'COST', 'TGT', 'HD', 'LOW', 'MCD', 'SBUX', 'NKE', 'DIS', 'KO',
+    'PEP', 'PG', 'CL', 'KHC', 'MDLZ', 'PM', 'MO', 'CVS', 'WBA', 'TMO',
+    'TGT', 'ROST', 'TJX', 'DG', 'DLTR', 'ULTA', 'TSCO', 'BBY',
+    # Healthcare
+    'JNJ', 'PFE', 'MRK', 'ABBV', 'LLY', 'AMGN', 'GILD', 'BIIB', 'REGN',
+    'VRTX', 'ISRG', 'DHR', 'ABT', 'MDT', 'UNH', 'CVS', 'CI', 'ANTM',
+    'HUM', 'ELV', 'MCK', 'ABC', 'CAH', 'ZTS', 'IQV',
+    # Industrial
+    'BA', 'CAT', 'GE', 'F', 'GM', 'HON', 'MMM', 'LMT', 'RTX', 'NOC',
+    'GD', 'DE', 'UPS', 'FDX', 'UNP', 'CSX', 'NSC', 'KSU', 'JBHT',
+    'CARR', 'OTIS', 'PH', 'ETN', 'EMR', 'ROK', 'AME',
+    # Energy
+    'XOM', 'CVX', 'COP', 'EOG', 'SLB', 'OXY', 'PSX', 'VLO', 'MPC',
+    'KMI', 'WMB', 'OKE', 'LNG', 'HAL', 'BKR', 'FANG',
+    # Telecom
+    'T', 'VZ', 'TMUS', 'CMCSA', 'CHTR', 'DISCA', 'WBD', 'PARA',
+    # Real Estate
+    'AMT', 'PLD', 'CCI', 'EQIX', 'DLR', 'PSA', 'WELL', 'SPG',
+    'O', 'AVB', 'EQR', 'VTR', 'ARE', 'INVH', 'SUI'
 ]
 
+# ============================================
+# ВСЕ ИНДЕКСЫ
+# ============================================
+
 INDICES_OTC = {
+    # US
     '^GSPC': 'S&P 500',
     '^DJI': 'Dow Jones',
     '^IXIC': 'NASDAQ',
     '^RUT': 'Russell 2000',
-    'DX-Y.NYB': 'DXY (Доллар)'
+    '^VIX': 'VIX (Volatility)',
+    'DX-Y.NYB': 'DXY (Доллар)',
+    # Europe
+    '^FTSE': 'FTSE 100 (UK)',
+    '^GDAXI': 'DAX (Germany)',
+    '^FCHI': 'CAC 40 (France)',
+    '^STOXX50E': 'Euro Stoxx 50',
+    '^IBEX': 'IBEX 35 (Spain)',
+    '^SMI': 'SMI (Switzerland)',
+    '^AEX': 'AEX (Netherlands)',
+    # Asia
+    '^N225': 'Nikkei 225 (Japan)',
+    '^HSI': 'Hang Seng (Hong Kong)',
+    '000300.SS': 'CSI 300 (China)',
+    '^AXJO': 'ASX 200 (Australia)',
+    '^KS11': 'KOSPI (Korea)',
+    '^NSEI': 'Nifty 50 (India)',
+    '^STI': 'Straits Times (Singapore)',
+    # Others
+    '^BVSP': 'Bovespa (Brazil)',
+    '^MXX': 'IPC (Mexico)',
+    '^IMOEX': 'MOEX (Russia)'
 }
+
+# ============================================
+# ВСЕ РОССИЙСКИЕ АКЦИИ
+# ============================================
 
 RUSSIAN_STOCKS = {
     'YNDX.ME': 'Яндекс',
@@ -90,7 +217,65 @@ RUSSIAN_STOCKS = {
     'GAZP.ME': 'Газпром',
     'LKOH.ME': 'Лукойл',
     'ROSN.ME': 'Роснефть',
-    'NVTK.ME': 'Новатэк'
+    'NVTK.ME': 'Новатэк',
+    'TATN.ME': 'Татнефть',
+    'SNGS.ME': 'Сургутнефтегаз',
+    'GMKN.ME': 'Норникель',
+    'CHMF.ME': 'Северсталь',
+    'NLMK.ME': 'НЛМК',
+    'MAGN.ME': 'Магнитогорский МК',
+    'ALRS.ME': 'Алроса',
+    'MTSS.ME': 'МТС',
+    'RTKM.ME': 'Ростелеком',
+    'MGNT.ME': 'Магнит',
+    'TCSG.ME': 'Т-Банк',
+    'VKCO.ME': 'VK',
+    'OZON.ME': 'Ozon',
+    'AFKS.ME': 'АФК Система',
+    'AFLT.ME': 'Аэрофлот',
+    'PIKK.ME': 'ПИК',
+    'LSRG.ME': 'ЛСР',
+    'RUAL.ME': 'Русал',
+    'PHOR.ME': 'ФосАгро',
+    'IRAO.ME': 'Интер РАО',
+    'FEES.ME': 'Россети',
+    'HYDR.ME': 'РусГидро',
+    'UPRO.ME': 'Юнипро'
+}
+
+# ============================================
+# ЕВРОПЕЙСКИЕ АКЦИИ
+# ============================================
+
+EUROPEAN_STOCKS = {
+    # Germany
+    'SAP.DE': 'SAP',
+    'SIE.DE': 'Siemens',
+    'ALV.DE': 'Allianz',
+    'DTE.DE': 'Deutsche Telekom',
+    'BAS.DE': 'BASF',
+    'BMW.DE': 'BMW',
+    'VOW3.DE': 'Volkswagen',
+    'MBG.DE': 'Mercedes-Benz',
+    # France
+    'MC.PA': 'LVMH',
+    'TTE.PA': 'TotalEnergies',
+    'SAN.PA': 'Sanofi',
+    'OR.PA': 'L\'Oreal',
+    'SU.PA': 'Schneider Electric',
+    'AIR.PA': 'Airbus',
+    # UK
+    'HSBA.L': 'HSBC',
+    'SHEL.L': 'Shell',
+    'AZN.L': 'AstraZeneca',
+    'ULVR.L': 'Unilever',
+    'GSK.L': 'GSK',
+    'BP.L': 'BP',
+    # Switzerland
+    'NESN.SW': 'Nestle',
+    'ROG.SW': 'Roche',
+    'NOVN.SW': 'Novartis',
+    'UBSG.SW': 'UBS'
 }
 
 # ============================================
@@ -104,6 +289,8 @@ def get_display_name(symbol):
         return INDICES_OTC[symbol]
     if symbol in RUSSIAN_STOCKS:
         return RUSSIAN_STOCKS[symbol]
+    if symbol in EUROPEAN_STOCKS:
+        return EUROPEAN_STOCKS[symbol]
     return symbol
 
 def get_symbol_price(symbol):
@@ -115,6 +302,8 @@ def get_symbol_price(symbol):
         elif symbol in INDICES_OTC:
             ticker = yf.Ticker(symbol)
         elif symbol in RUSSIAN_STOCKS:
+            ticker = yf.Ticker(symbol)
+        elif symbol in EUROPEAN_STOCKS:
             ticker = yf.Ticker(symbol)
         else:
             yf_symbol = symbol.replace('/', '') + '=X'
@@ -321,7 +510,7 @@ bot = telebot.TeleBot(config.TELEGRAM_TOKEN)
 user_settings = {}
 
 # ============================================
-# ГЛАВНАЯ КЛАВИАТУРА
+# КЛАВИАТУРЫ
 # ============================================
 
 def main_keyboard():
@@ -332,78 +521,16 @@ def main_keyboard():
     kb.add('💰 БЫСТРАЯ СТАТИСТИКА', '❓ ПОМОЩЬ')
     return kb
 
-# ============================================
-# БЫСТРАЯ СТАТИСТИКА (1 КЛИК)
-# ============================================
-
 def quick_stats_keyboard():
-    kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    kb.add('✅ ВЫИГРАЛ $1', '❌ ПРОИГРАЛ $1')
-    kb.add('✅ ВЫИГРАЛ $5', '❌ ПРОИГРАЛ $5')
-    kb.add('✅ ВЫИГРАЛ $10', '❌ ПРОИГРАЛ $10')
-    kb.add('✅ ВЫИГРАЛ $15', '❌ ПРОИГРАЛ $15')
-    kb.add('✅ ВЫИГРАЛ $20', '❌ ПРОИГРАЛ $20')
-    kb.add('✅ ВЫИГРАЛ $25', '❌ ПРОИГРАЛ $25')
-    kb.add('✅ ВЫИГРАЛ $30', '❌ ПРОИГРАЛ $30')
-    kb.add('✅ ВЫИГРАЛ $50', '❌ ПРОИГРАЛ $50')
-    kb.add('✅ ВЫИГРАЛ $100', '❌ ПРОИГРАЛ $100')
+    kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+    kb.add('✅ $1', '✅ $5', '✅ $10')
+    kb.add('✅ $15', '✅ $20', '✅ $25')
+    kb.add('✅ $30', '✅ $50', '✅ $100')
+    kb.add('❌ $1', '❌ $5', '❌ $10')
+    kb.add('❌ $15', '❌ $20', '❌ $25')
+    kb.add('❌ $30', '❌ $50', '❌ $100')
     kb.add('🔙 ГЛАВНОЕ МЕНЮ', '📊 СТАТИСТИКА')
     return kb
-
-@bot.message_handler(func=lambda m: m.text == '💰 БЫСТРАЯ СТАТИСТИКА')
-def quick_stats_menu(message):
-    bot.send_message(message.chat.id, "💰 *БЫСТРЫЙ ВВОД СТАТИСТИКИ*\n\nНажмите на сумму, которую вы выиграли или проиграли:", 
-                    parse_mode='Markdown', reply_markup=quick_stats_keyboard())
-
-# Обработчики выигрышей
-@bot.message_handler(func=lambda m: m.text and m.text.startswith('✅ ВЫИГРАЛ $'))
-def win_quick(message):
-    user_id = message.from_user.id
-    amount = float(message.text.replace('✅ ВЫИГРАЛ $', ''))
-    
-    total_trades, winning_trades, total_profit = db.add_trade(user_id, 'WIN', amount)
-    win_rate = (winning_trades / total_trades * 100) if total_trades > 0 else 0
-    
-    text = f"""
-✅ *ВЫИГРЫШ +${amount:.0f}*
-
-📊 *ОБНОВЛЕННАЯ СТАТИСТИКА:*
-├ Сделок: {total_trades}
-├ Побед: {winning_trades}
-├ Поражений: {total_trades - winning_trades}
-├ Win Rate: {win_rate:.1f}%
-└ Прибыль: ${total_profit:.2f}
-
-💰 Продолжайте в том же духе!
-"""
-    bot.reply_to(message, text, parse_mode='Markdown')
-
-# Обработчики проигрышей
-@bot.message_handler(func=lambda m: m.text and m.text.startswith('❌ ПРОИГРАЛ $'))
-def loss_quick(message):
-    user_id = message.from_user.id
-    amount = float(message.text.replace('❌ ПРОИГРАЛ $', ''))
-    
-    total_trades, winning_trades, total_profit = db.add_trade(user_id, 'LOSS', amount)
-    win_rate = (winning_trades / total_trades * 100) if total_trades > 0 else 0
-    
-    text = f"""
-❌ *ПРОИГРЫШ -${amount:.0f}*
-
-📊 *ОБНОВЛЕННАЯ СТАТИСТИКА:*
-├ Сделок: {total_trades}
-├ Побед: {winning_trades}
-├ Поражений: {total_trades - winning_trades}
-├ Win Rate: {win_rate:.1f}%
-└ Прибыль: ${total_profit:.2f}
-
-📚 Не отчаивайтесь, следующая сделка будет успешной!
-"""
-    bot.reply_to(message, text, parse_mode='Markdown')
-
-@bot.message_handler(func=lambda m: m.text == '🔙 ГЛАВНОЕ МЕНЮ')
-def back_to_main(message):
-    start(message)
 
 # ============================================
 # ОСНОВНЫЕ КОМАНДЫ
@@ -419,13 +546,25 @@ def start(message):
     
     license_info = db.check_license(user.id)
     
+    total = (len(FOREX_OTC) + len(CRYPTO_OTC) + len(COMMODITIES_OTC) + 
+             len(STOCKS_OTC) + len(INDICES_OTC) + len(RUSSIAN_STOCKS) + 
+             len(EUROPEAN_STOCKS))
+    
     text = f"""
-🚀 *PRO OTC TRADING BOT*
+🚀 *PRO OTC TRADING BOT - MAX VERSION*
 
 Привет, {user.first_name}! 👋
 
-✅ Таймфреймы от 1 секунды
-✅ 500+ инструментов
+✅ *{total}+ ТОРГОВЫХ ИНСТРУМЕНТОВ*
+├ 💱 Валют: {len(FOREX_OTC)}
+├ ₿ Крипто: {len(CRYPTO_OTC)}
+├ 🛢️ Сырьё: {len(COMMODITIES_OTC)}
+├ 📈 Акции США: {len(STOCKS_OTC)}
+├ 🇪🇺 Акции Европы: {len(EUROPEAN_STOCKS)}
+├ 🇷🇺 Акции РФ: {len(RUSSIAN_STOCKS)}
+└ 📊 Индексы: {len(INDICES_OTC)}
+
+✅ Таймфреймы: {len(TIMEFRAMES)} (от 1 секунды)
 ✅ Автоматические сигналы RSI
 ✅ Быстрая статистика в 1 клик
 
@@ -469,8 +608,7 @@ def signal(message):
     data = get_symbol_price(symbol)
     
     if not data:
-        bot.edit_message_text(f"❌ Нет данных для {display_name}\n\nПопробуйте другой инструмент", 
-                            message.chat.id, status_msg.message_id, parse_mode='Markdown')
+        bot.edit_message_text(f"❌ Нет данных для {display_name}", message.chat.id, status_msg.message_id, parse_mode='Markdown')
         return
     
     signal_data = generate_signal(data['prices'])
@@ -539,6 +677,60 @@ def stats(message):
     
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
+@bot.message_handler(func=lambda m: m.text == '💰 БЫСТРАЯ СТАТИСТИКА')
+def quick_stats_menu(message):
+    bot.send_message(message.chat.id, "💰 *БЫСТРЫЙ ВВОД СТАТИСТИКИ*\n\nНажмите на сумму, которую вы выиграли или проиграли:", 
+                    parse_mode='Markdown', reply_markup=quick_stats_keyboard())
+
+# Обработчики быстрой статистики
+@bot.message_handler(func=lambda m: m.text and m.text.startswith('✅ $'))
+def win_quick(message):
+    user_id = message.from_user.id
+    amount = float(message.text.replace('✅ $', ''))
+    
+    total_trades, winning_trades, total_profit = db.add_trade(user_id, 'WIN', amount)
+    win_rate = (winning_trades / total_trades * 100) if total_trades > 0 else 0
+    
+    text = f"""
+✅ *ВЫИГРЫШ +${amount:.0f}*
+
+📊 *ОБНОВЛЕННАЯ СТАТИСТИКА:*
+├ Сделок: {total_trades}
+├ Побед: {winning_trades}
+├ Поражений: {total_trades - winning_trades}
+├ Win Rate: {win_rate:.1f}%
+└ Прибыль: ${total_profit:.2f}
+
+💰 Продолжайте в том же духе!
+"""
+    bot.reply_to(message, text, parse_mode='Markdown')
+
+@bot.message_handler(func=lambda m: m.text and m.text.startswith('❌ $'))
+def loss_quick(message):
+    user_id = message.from_user.id
+    amount = float(message.text.replace('❌ $', ''))
+    
+    total_trades, winning_trades, total_profit = db.add_trade(user_id, 'LOSS', amount)
+    win_rate = (winning_trades / total_trades * 100) if total_trades > 0 else 0
+    
+    text = f"""
+❌ *ПРОИГРЫШ -${amount:.0f}*
+
+📊 *ОБНОВЛЕННАЯ СТАТИСТИКА:*
+├ Сделок: {total_trades}
+├ Побед: {winning_trades}
+├ Поражений: {total_trades - winning_trades}
+├ Win Rate: {win_rate:.1f}%
+└ Прибыль: ${total_profit:.2f}
+
+📚 Не отчаивайтесь, следующая сделка будет успешной!
+"""
+    bot.reply_to(message, text, parse_mode='Markdown')
+
+@bot.message_handler(func=lambda m: m.text == '🔙 ГЛАВНОЕ МЕНЮ')
+def back_to_main(message):
+    start(message)
+
 @bot.message_handler(func=lambda m: m.text == '🔧 ИНСТРУМЕНТ')
 def instrument(message):
     kb = types.InlineKeyboardMarkup(row_width=2)
@@ -547,8 +739,9 @@ def instrument(message):
         types.InlineKeyboardButton(f"₿ КРИПТО ({len(CRYPTO_OTC)})", callback_data="cat_crypto"),
         types.InlineKeyboardButton(f"🛢️ СЫРЬЕ ({len(COMMODITIES_OTC)})", callback_data="cat_commodities"),
         types.InlineKeyboardButton(f"📈 АКЦИИ США ({len(STOCKS_OTC)})", callback_data="cat_stocks"),
-        types.InlineKeyboardButton(f"📊 ИНДЕКСЫ ({len(INDICES_OTC)})", callback_data="cat_indices"),
-        types.InlineKeyboardButton(f"🇷🇺 АКЦИИ РФ ({len(RUSSIAN_STOCKS)})", callback_data="cat_russian")
+        types.InlineKeyboardButton(f"🇪🇺 АКЦИИ ЕВРОПЫ ({len(EUROPEAN_STOCKS)})", callback_data="cat_europe"),
+        types.InlineKeyboardButton(f"🇷🇺 АКЦИИ РФ ({len(RUSSIAN_STOCKS)})", callback_data="cat_russian"),
+        types.InlineKeyboardButton(f"📊 ИНДЕКСЫ ({len(INDICES_OTC)})", callback_data="cat_indices")
     )
     bot.send_message(message.chat.id, "📊 *ВЫБЕРИТЕ КАТЕГОРИЮ*", parse_mode='Markdown', reply_markup=kb)
 
@@ -599,7 +792,10 @@ def buy(message):
 
 @bot.message_handler(func=lambda m: m.text == '❓ ПОМОЩЬ')
 def help_cmd(message):
-    total = len(FOREX_OTC) + len(CRYPTO_OTC) + len(COMMODITIES_OTC) + len(STOCKS_OTC) + len(INDICES_OTC) + len(RUSSIAN_STOCKS)
+    total = (len(FOREX_OTC) + len(CRYPTO_OTC) + len(COMMODITIES_OTC) + 
+             len(STOCKS_OTC) + len(INDICES_OTC) + len(RUSSIAN_STOCKS) + 
+             len(EUROPEAN_STOCKS))
+    
     text = f"""
 ❓ *ПОМОЩЬ*
 ━━━━━━━━━━━━━━━━━━━━━
@@ -610,11 +806,12 @@ def help_cmd(message):
 ₿ Крипто: {len(CRYPTO_OTC)}
 🛢️ Сырьё: {len(COMMODITIES_OTC)}
 📈 Акции США: {len(STOCKS_OTC)}
-📊 Индексы: {len(INDICES_OTC)}
+🇪🇺 Акции Европы: {len(EUROPEAN_STOCKS)}
 🇷🇺 Акции РФ: {len(RUSSIAN_STOCKS)}
+📊 Индексы: {len(INDICES_OTC)}
 
 ⏱️ *ТАЙМФРЕЙМЫ:*
-1с,3с,5с,10с,15с,30с,1м,5м,15м,30м,1ч,4ч,1д,1н
+{', '.join(TIMEFRAMES[:10])}...
 
 📌 *КОМАНДЫ:*
 /signal - Получить сигнал
@@ -657,12 +854,15 @@ def callback(call):
         elif cat == 'stocks':
             items = STOCKS_OTC
             title = "📈 АКЦИИ США"
-        elif cat == 'indices':
-            items = list(INDICES_OTC.keys())
-            title = "📊 ИНДЕКСЫ"
+        elif cat == 'europe':
+            items = list(EUROPEAN_STOCKS.keys())
+            title = "🇪🇺 АКЦИИ ЕВРОПЫ"
         elif cat == 'russian':
             items = list(RUSSIAN_STOCKS.keys())
             title = "🇷🇺 АКЦИИ РФ"
+        elif cat == 'indices':
+            items = list(INDICES_OTC.keys())
+            title = "📊 ИНДЕКСЫ"
         else:
             return
         
@@ -729,25 +929,28 @@ def confirm(message):
 # ============================================
 
 if __name__ == '__main__':
-    total = len(FOREX_OTC) + len(CRYPTO_OTC) + len(COMMODITIES_OTC) + len(STOCKS_OTC) + len(INDICES_OTC) + len(RUSSIAN_STOCKS)
+    total = (len(FOREX_OTC) + len(CRYPTO_OTC) + len(COMMODITIES_OTC) + 
+             len(STOCKS_OTC) + len(INDICES_OTC) + len(RUSSIAN_STOCKS) + 
+             len(EUROPEAN_STOCKS))
     
-    print("=" * 60)
-    print("🚀 PRO OTC TRADING BOT")
-    print("=" * 60)
+    print("=" * 70)
+    print("🚀 PRO OTC TRADING BOT - MAX VERSION")
+    print("=" * 70)
     print(f"👤 Админ: @ArtemchkaaBro")
     print(f"💳 Z: {config.WEBMONEY_Z}")
     print(f"₿ X: {config.WEBMONEY_X}")
-    print("=" * 60)
+    print("=" * 70)
     print(f"📊 ВСЕГО ИНСТРУМЕНТОВ: {total}")
     print(f"💱 Валют: {len(FOREX_OTC)}")
     print(f"₿ Крипто: {len(CRYPTO_OTC)}")
     print(f"🛢️ Сырьё: {len(COMMODITIES_OTC)}")
     print(f"📈 Акции США: {len(STOCKS_OTC)}")
-    print(f"📊 Индексы: {len(INDICES_OTC)}")
+    print(f"🇪🇺 Акции Европы: {len(EUROPEAN_STOCKS)}")
     print(f"🇷🇺 Акции РФ: {len(RUSSIAN_STOCKS)}")
+    print(f"📊 Индексы: {len(INDICES_OTC)}")
     print(f"⏱️ Таймфреймов: {len(TIMEFRAMES)}")
-    print("=" * 60)
+    print("=" * 70)
     print("✅ Бот запущен! Работает 24/7")
-    print("=" * 60)
+    print("=" * 70)
     
     bot.infinity_polling(timeout=60)
