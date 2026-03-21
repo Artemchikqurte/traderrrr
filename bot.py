@@ -25,7 +25,7 @@ from typing import List, Dict
 @dataclass
 class Config:
     TELEGRAM_TOKEN: str = os.environ.get('TELEGRAM_TOKEN', '8626772252:AAFPf3SiYDyBPSKIHeh-Ofg4BON_MLaIs1g')
-    ADMIN_IDS: List[int] = field(default_factory=lambda: [123456789])
+    ADMIN_IDS: List[int] = field(default_factory=lambda: [5908110622])
     WEBMONEY_Z: str = 'Z653554497387'
     WEBMONEY_X: str = 'X857242106275'
     PRICE_MONTHLY_USD: float = 35.00
