@@ -600,27 +600,61 @@ def process_trade_amount(message):
     
     # Очищаем состояние
     del user_settings[user_id]['pending_trade']
-
 @bot.message_handler(func=lambda m: m.text == '📈 СТАТИСТИКА')
 def stats(message):
     user_id = message.from_user.id
-    stats = db.get_stats(user_id)
     
-    win_rate = stats['win_rate']
+    # Получаем пользователя
+    user = db.get_user(user_id)
+    
+    if not user:
+        # Если пользователя нет, создаем
+        db.create_user(user_id, message.from_user.username, message.from_user.first_name)
+        user = db.get_user(user_id)
+    
+    # Берем данные
+    total_trades = user['total_trades'] if user['total_trades'] else 0
+    wins = user['winning_trades'] if user['winning_trades'] else 0
+    losses = total_trades - wins
+    total_profit = user['total_profit'] if user['total_profit'] else 0
+    
+    # Считаем win rate
+    if total_trades > 0:
+        win_rate = (wins / total_trades) * 100
+    else:
+        win_rate = 0
+    
+    # Создаем график win rate
     bar = '🟢' * int(win_rate / 5) + '⚪' * (20 - int(win_rate / 5))
     
+    # Определяем цвет прибыли
+    profit_color = "🟢" if total_profit >= 0 else "🔴"
+    
     text = f"""
-📊 *СТАТИСТИКА*
+📊 *СТАТИСТИКА ТОРГОВЛИ*
 ━━━━━━━━━━━━━━━━━━━━━
 
-├ Сделок: `{stats['total_trades']}`
-├ Побед: `{stats['wins']}`
-├ Поражений: `{stats['losses']}`
+📈 *ОБЩАЯ СТАТИСТИКА:*
+├ Сделок: `{total_trades}`
+├ Побед: `{wins}`
+├ Поражений: `{losses}`
 ├ Win Rate: `{win_rate:.1f}%`
-└ Прибыль: `{stats['total_profit']:+.2f}$`
+└ Прибыль: {profit_color} `{total_profit:+.2f}$`
 
 {bar}
+
+💡 *СОВЕТ:* 
 """
+    
+    if win_rate > 60:
+        text += "✅ Отличный результат! Продолжайте в том же духе."
+    elif win_rate > 45:
+        text += "⚠️ Хороший результат, есть потенциал для улучшения."
+    elif total_trades > 0:
+        text += "📚 Следуйте сигналам строже, не отклоняйтесь от стратегии."
+    else:
+        text += "📊 Сделайте первую сделку, чтобы увидеть статистику.\n\n💰 Добавить сделку: кнопка '💰 ДОБАВИТЬ СДЕЛКУ'"
+    
     bot.send_message(message.chat.id, text, parse_mode='Markdown')
 
 @bot.message_handler(func=lambda m: m.text == '🔧 ИНСТРУМЕНТ')
